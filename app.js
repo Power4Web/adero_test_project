@@ -1,24 +1,23 @@
-const { filterData, countData } = require('./utils');
+const { actions } = require('./actions');
 const data = require('./data');
 
-
-function main(){
-   /**
-    * Retrieving the prompt input
-    * (slice(2) => to keep only the entered command)
-    */
+function main() {
   const args = process.argv.slice(2);
-  const filterArg = args.find((arg) => arg.startsWith('--filter='));
-  const countArg = args.includes('--count');
+  const action = args.find(arg => arg.startsWith('--'));
 
-  if (filterArg) {
-    const pattern = filterArg.split('=')[1];
-    console.log(JSON.stringify(filterData(data.data, pattern), null, 2));
-  } else if (countArg) {
-    console.log(JSON.stringify(data.data, countData(), null, 2));
-  } else {
-    console.log('Usage: node app.js --filter=<pattern> OR node app.js --count');
+  if (!action) {
+    console.error('Please provide a valid argument: --filter=<pattern> or --count');
+    process.exit(1);
   }
-}
-main();
 
+  const [command, value] = action.includes('=') ? action.split('=') : [action, null];
+
+  if (!actions[command]) {
+    console.error('Invalid argument. Use --filter=<pattern> or --count');
+    process.exit(1);
+  }
+
+  actions[command](data.data, value);
+}
+
+main();

@@ -9,7 +9,7 @@
 function filterData(data, pattern) {
   const dataTemp = data.reduce((acc, country) => {
     const filteredPeople = country.people.reduce((peopleAcc, person) => {
-      const filteredAnimals = person.animals.filter((animal) => animal.name.includes(pattern));
+      const filteredAnimals = person.animals.filter((animal) => animal.name.toLowerCase().includes(pattern));
       if (filteredAnimals.length > 0) {
         peopleAcc.push({...person, animals: filteredAnimals});
       }
